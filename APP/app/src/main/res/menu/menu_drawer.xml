@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group
+        android:id="@+id/grp_personal"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/companyData"
+            android:icon="@drawable/icn_eye"
+            android:title="@string/companydata_i"/>
+        <item
+            android:id="@+id/buy"
+            android:icon="@drawable/icn_eye"
+            android:title="@string/buy_i"/>
+        <item
+            android:id="@+id/supervisors"
+            android:icon="@drawable/icn_eye"
+            android:title="@string/supervisors_i"/>
+        <item
+            android:id="@+id/zones"
+            android:icon="@drawable/icn_eye"
+            android:title="@string/zones_i"/>
+        <item
+            android:id="@+id/station"
+            android:icon="@drawable/icn_eye"
+            android:title="@string/station_i"/>
+        <item
+            android:id="@+id/employees"
+            android:icon="@drawable/icn_eye"
+            android:title="@string/employees_i"/>
+        <item
+            android:id="@+id/audit"
+            android:icon="@drawable/icn_eye"
+            android:title="@string/audit_i"/>
+
+
+        <item
+            android:id="@+id/reports"
+            android:icon="@drawable/icn_eye"
+            android:title="@string/reports_i"/>
+
+        <item
+            android:id="@+id/changePassword"
+            android:icon="@drawable/icn_eye"
+            android:title="@string/changepass_i"/>
+        <item
+            android:id="@+id/settings"
+            android:icon="@drawable/icn_eye"
+            android:title="@string/settings_i"/>
+    </group>
+
+    <group
+        android:id="@+id/grp_signOff"
+        android:checkableBehavior="single">
+    <item
+        android:id="@+id/signOff"
+        android:icon="@drawable/icn_eye"
+        android:title="@string/signoff_i"/>
+    </group>
+</menu>
