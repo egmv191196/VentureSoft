@@ -14,6 +14,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.egmvdev.venturesoft.R;
 import com.egmvdev.venturesoft.clases.usuarioSinglenton;
 import com.egmvdev.venturesoft.databinding.ActivityMenuBinding;
+import com.egmvdev.venturesoft.iu.main.viewmodel.mainViewModel;
 import com.egmvdev.venturesoft.iu.mainfragment.view.mainFragment;
 
 public class main extends AppCompatActivity {
@@ -21,25 +22,32 @@ public class main extends AppCompatActivity {
     private ActivityMenuBinding binding;
 
     private ActionBarDrawerToggle toggle;
+    private mainViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMenuBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        viewModel = new mainViewModel(this);
         cargarVista();
         addActions();
+        observer();
     }
 
     private void cargarVista(){
-        initTitle();
         initNavigationMenu();
         cargarFragment();
+        viewModel.obtenerNombre();
     }
 
-    private void initTitle() {
+    private void observer(){
+        viewModel.getNombreUsuario().observe(this, this::initTitle);
+    }
+
+    private void initTitle(String title) {
         TextView titleHeader = binding.navigationView.getHeaderView(0).findViewById(R.id.title_header);
-        titleHeader.setText(usuarioSinglenton.getInstance().nombreCompleto);
+        titleHeader.setText(title);
     }
 
     private void initNavigationMenu() {

@@ -7,7 +7,8 @@
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
-
+    <string name="consulta">Consultado información</string>
+    <string name="atencion">Atención</string>
     <string name="campoVacio">Por favor llenar este campo</string>
 
     <string name="companydata_i">Company Data</string>
@@ -23,4 +24,11 @@
     <string name="signoff_i">Sign Off</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    //Alert
+    <string name="cancelar">Cancelar</string>
+    <string name="aceptar">Aceptar</string>
+    //Loader
+    <string name="espere">Espere</string>
+    <string name="errorAut">Usuario o contraseña incorrecta, intentalo de nuevo</string>
 </resources>

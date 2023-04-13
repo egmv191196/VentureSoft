@@ -7,9 +7,19 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.egmvdev.venturesoft.base.baseViewModel;
 import com.egmvdev.venturesoft.iu.login.repository.loginRepository;
 
-public class loginViewModel extends ViewModel {
+import java.util.concurrent.TimeUnit;
+
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.core.SingleOnSubscribe;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+
+public class loginViewModel extends baseViewModel {
+    protected CompositeDisposable compositeDisposable;
 
     private loginRepository repository;
 
@@ -20,6 +30,7 @@ public class loginViewModel extends ViewModel {
         repository = new loginRepository(context);
         this.campoVacio = new MutableLiveData<>();
         this.accesoUsuario = new MutableLiveData<>();
+        compositeDisposable = new CompositeDisposable();
     }
 
     public LiveData<Integer> getCampoVacio(){
@@ -40,11 +51,19 @@ public class loginViewModel extends ViewModel {
         }
     }
     public void validarUsuario(String email, String password){
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                 accesoUsuario.postValue(repository.validarUsuario(email, password));
-            }
-        }).start();
+        loader.setValue(true);
+        compositeDisposable.add(Single.create((SingleOnSubscribe<Boolean>) emitter ->
+                        emitter.onSuccess(repository.validarUsuario(email, password)))
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(resp -> {
+                    loader.setValue(false);
+                    if (resp != null){
+                        accesoUsuario.setValue(resp);
+                    }
+                }, throwable -> {
+                    throwable.printStackTrace();
+                    loader.setValue(false);
+                }));
     }
 }

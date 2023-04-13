@@ -20,37 +20,17 @@ import retrofit2.http.Url;
 
 public interface UTGenericEndPointInterface {
 
-    @GET("{method}")
-    Call<ResponseBody> getResponse(@Path("method") String method);
-
-    @GET("{method}")
-    Call<ResponseBody> getResponseParamsQuery(@Path("method") String method, @QueryMap Map<String, String> params);
-
     @POST("{method}")
     Call<ResponseBody> postResponseParamsQuery(@Path("method") String method, @QueryMap Map<String, String> params);
 
 
-    @GET
-    Call<ResponseBody> responseGETAuthorization(
-            @Url String url,
-            @Header("Authorization") String auth
-    );
-
-    @Headers({"Content-Type:application/json"})
-    @POST("{method}")
-    Call<ResponseBody> responsePost(@Path("method") String method, @Body String params);
-
     @FormUrlEncoded
     @Headers({"Content-Type:application/x-www-form-urlencoded"})
     @POST("{method}")
-    Call<ResponseBody> responsePost(@Path("method") String method, @FieldMap Map<String, String> params);
-
-    @Headers({"Content-Type:application/json"})
-    @POST("{method}")
-    Call<ResponseBody> responsePostHeaders(
-            @HeaderMap Map<String, String> headers,
+    Call<ResponseBody> responsePostAuthorization(
+            @Header("Authorization") String auth,
             @Path("method") String method,
-            @Body String parametros
+            @FieldMap Map<String, Integer> params
     );
 
     @Headers({"Content-Type:application/json"})

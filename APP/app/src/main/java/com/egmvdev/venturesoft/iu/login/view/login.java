@@ -9,6 +9,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.egmvdev.venturesoft.R;
+import com.egmvdev.venturesoft.base.baseActivity;
 import com.egmvdev.venturesoft.databinding.ActivityLoginBinding;
 import com.egmvdev.venturesoft.iu.login.viewmodel.loginViewModel;
 import com.egmvdev.venturesoft.iu.main.view.main;
@@ -17,7 +18,7 @@ import com.egmvdev.venturesoft.utils.web.UTWebApplication;
 import java.util.Arrays;
 import java.util.List;
 
-public class login extends AppCompatActivity {
+public class login extends baseActivity {
 
     private ActivityLoginBinding binding;
     private UTWebApplication utWebApplication = new UTWebApplication();
@@ -48,6 +49,7 @@ public class login extends AppCompatActivity {
     }
 
     private void observer() {
+        viewModel.getLoader().observe(this, this::showLoader);
         viewModel.getCampoVacio().observe(this, this::resultValidacion);
         viewModel.getAccesoUsuario().observe(this, this::resultValidacion);
     }
@@ -60,6 +62,10 @@ public class login extends AppCompatActivity {
             }
             return true;
         });
+    }
+
+    public void showLoader(Boolean show) {
+        showLoader(show, "Iniciando sesión");
     }
 
     public void validarCampos() {
@@ -80,7 +86,8 @@ public class login extends AppCompatActivity {
 
     private void resultValidacion(boolean resultado) {
         if (!resultado) {
-            Toast.makeText(this, "Datos incorrectos para inicio de sesion", Toast.LENGTH_LONG).show();
+            showAlert(getString(R.string.espere), getString(R.string.errorAut));
+//            Toast.makeText(this, "Datos incorrectos para inicio de sesion", Toast.LENGTH_LONG).show();
         } else {
             startActivity(new Intent(this, main.class));
             finish();

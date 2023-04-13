@@ -1,7 +1,8 @@
 package com.egmvdev.venturesoft.iu.mainfragment.view;
 
-import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,28 +11,30 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.egmvdev.venturesoft.clases.usuarioSinglenton;
+import com.egmvdev.venturesoft.base.baseFragment;
 import com.egmvdev.venturesoft.databinding.FragmentMainBinding;
+import com.egmvdev.venturesoft.iu.mainfragment.viewmodel.mainFragmentViewModel;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
-import com.github.mikephil.charting.data.BarDataSet;
-import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.PieData;
-import com.github.mikephil.charting.data.PieDataSet;
-import com.github.mikephil.charting.data.PieEntry;
-import com.github.mikephil.charting.utils.ColorTemplate;
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 
 import java.util.ArrayList;
 
-public class mainFragment extends Fragment {
+public class mainFragment extends baseFragment {
 
     private FragmentMainBinding binding;
-    private PieDataSet pieDataSet = new PieDataSet(null, null);
-    private BarDataSet barDataSet;
 
+    private mainFragmentViewModel viewModel;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        viewModel = new mainFragmentViewModel(requireContext());
+        iniciarVista();
+        observer();
     }
 
     @Override
@@ -43,53 +46,62 @@ public class mainFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        iniciarVista();
     }
 
     public void iniciarVista() {
-        binding.titleFragment.setText(usuarioSinglenton.getInstance().sciaArray.get(0).razonSocial);
-        cargarGrafica1();
-        cargarGrafica2();
+        viewModel.obtenerRazonSocial();
+        viewModel.obtenerEstadisticas();
+        viewModel.obtenerConsumos();
     }
 
-    public void cargarGrafica1(){
+    private void observer() {
+        viewModel.getRazonSocial().observe(this, this::cargarRazon);
+        viewModel.getEstadisticas().observe(this, this::cargarGrafica1);
+        viewModel.getConsumo().observe(this, this::cargarGrafica2);
+        viewModel.getLoader().observe(this, this::showLoader);
 
-        barDataSet = new BarDataSet(generarDatosG1(), "Estadsitica");
-        barDataSet.setDrawIcons(false);
-        barDataSet.setColors(ColorTemplate.COLORFUL_COLORS);
-        barDataSet.setValueTextColor(Color.BLACK);
-        barDataSet.setValueTextSize(16f);
-
-        BarData barData = new BarData(barDataSet);
-        binding.chart1.setData(barData);
-        binding.chart1.getDescription().setEnabled(false);
-        binding.chart1.animate();
     }
 
-    public ArrayList<BarEntry> generarDatosG1(){
-        ArrayList<BarEntry> dataValues = new ArrayList<>();
-        dataValues.add(new BarEntry(2.5f,3));
-        dataValues.add(new BarEntry(4.7f,5));
-        dataValues.add(new BarEntry(5.7f,10));
-        return dataValues;
+    public void cargarRazon(String razonSocial) {
+        binding.titleFragment.setText(razonSocial);
     }
 
-    public void cargarGrafica2(){
-        pieDataSet.setValues(generarDatosG2());
-        pieDataSet.setLabel("Grafico de consumos");
-        pieDataSet.setColors(ColorTemplate.COLORFUL_COLORS);
-        pieDataSet.setValueTextColor(Color.BLACK);
-        pieDataSet.setValueTextSize(16f);
-        PieData pieData = new PieData(pieDataSet);
-        binding.chart2.setData(pieData);
+    public void cargarGrafica1(Pair<BarData, ArrayList<String>> datos) {
+        if (datos.second.size() > 0 ){
+            binding.chart1.getDescription().setEnabled(false);
+            binding.chart1.setMaxVisibleValueCount(120);
+            binding.chart1.setDrawGridBackground(false);
+            binding.chart1.setData(datos.first);
+
+            XAxis xAxis = binding.chart1.getXAxis();
+            xAxis.setValueFormatter(new IndexAxisValueFormatter(datos.second));
+            xAxis.setPosition(XAxis.XAxisPosition.TOP);
+            xAxis.setLabelCount(datos.second.size());
+
+            YAxis yAxisl = binding.chart1.getAxisLeft();
+            yAxisl.setAxisMaximum(100f);
+            yAxisl.setTextSize(8f);
+            YAxis yAxisr = binding.chart1.getAxisRight();
+            yAxisr.setEnabled(false);
+
+            Legend l = binding.chart1.getLegend();
+            l.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
+            l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.LEFT);
+            l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
+            l.setDrawInside(false);
+            l.setFormSize(9f);
+            l.setTextSize(11f);
+            l.setXEntrySpace(4f);
+            binding.chart1.animate();
+            binding.chart1.invalidate();
+        }
+
+    }
+
+    public void cargarGrafica2(PieData pieData) {
         binding.chart2.getDescription().setEnabled(false);
         binding.chart2.animate();
-    }
-
-    public ArrayList<PieEntry> generarDatosG2(){
-        ArrayList<PieEntry> dataValues = new ArrayList<>();
-        dataValues.add(new PieEntry(196,"Consumido"));
-        dataValues.add(new PieEntry(92,"Restante"));
-        return dataValues;
+        binding.chart2.setData(pieData);
+        binding.chart2.invalidate();
     }
 }

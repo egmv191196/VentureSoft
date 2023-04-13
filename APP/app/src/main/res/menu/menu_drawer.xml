@@ -6,46 +6,46 @@
         android:checkableBehavior="single">
         <item
             android:id="@+id/companyData"
-            android:icon="@drawable/icn_eye"
+            android:icon="@drawable/ic_company"
             android:title="@string/companydata_i"/>
         <item
             android:id="@+id/buy"
-            android:icon="@drawable/icn_eye"
+            android:icon="@drawable/ic_buy"
             android:title="@string/buy_i"/>
         <item
             android:id="@+id/supervisors"
-            android:icon="@drawable/icn_eye"
+            android:icon="@drawable/ic_supervisor"
             android:title="@string/supervisors_i"/>
         <item
             android:id="@+id/zones"
-            android:icon="@drawable/icn_eye"
+            android:icon="@drawable/ic_zones"
             android:title="@string/zones_i"/>
         <item
             android:id="@+id/station"
-            android:icon="@drawable/icn_eye"
+            android:icon="@drawable/ic_station"
             android:title="@string/station_i"/>
         <item
             android:id="@+id/employees"
-            android:icon="@drawable/icn_eye"
+            android:icon="@drawable/ic_employees"
             android:title="@string/employees_i"/>
         <item
             android:id="@+id/audit"
-            android:icon="@drawable/icn_eye"
+            android:icon="@drawable/ic_audit"
             android:title="@string/audit_i"/>
 
 
         <item
             android:id="@+id/reports"
-            android:icon="@drawable/icn_eye"
+            android:icon="@drawable/ic_reports"
             android:title="@string/reports_i"/>
 
         <item
             android:id="@+id/changePassword"
-            android:icon="@drawable/icn_eye"
+            android:icon="@drawable/ic_change_password"
             android:title="@string/changepass_i"/>
         <item
             android:id="@+id/settings"
-            android:icon="@drawable/icn_eye"
+            android:icon="@drawable/ic_settings"
             android:title="@string/settings_i"/>
     </group>
 
@@ -54,7 +54,7 @@
         android:checkableBehavior="single">
     <item
         android:id="@+id/signOff"
-        android:icon="@drawable/icn_eye"
+        android:icon="@drawable/ic_sign_off"
         android:title="@string/signoff_i"/>
     </group>
 </menu>

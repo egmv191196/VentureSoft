@@ -22,8 +22,7 @@ public class UTLoginWA extends UTWebApplication {
         Map<String, String> parametros = new HashMap<>();
         parametros.put("email", email);
         parametros.put("password", password);
-
-        if (responsePostParamssQuery("Authorization/AccesoUsuario/",parametros,false)){
+        if (responsePostParamssQuery("Authorization/AccesoUsuario/", parametros,false)){
             if (!json.isJsonNull()){
                 if (json.get("codigo").getAsString().equals("ET000")){
                     usuarioSinglenton.getInstance().token = json.get("token").getAsString();

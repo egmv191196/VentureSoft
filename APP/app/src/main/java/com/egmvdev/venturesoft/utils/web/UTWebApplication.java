@@ -61,69 +61,6 @@ public class UTWebApplication {
         esResponseBody = false;
     }
 
-    public boolean responseGET(String method, boolean decode) {
-        if (!checkConnection()) {
-            errorConexion("No se cuenta con cobertura para realizar la operación");
-            return false;
-        }
-        String response = null;
-        try {
-            Response<ResponseBody> responseBody = retrofitClient.getClient(serviceUrl).create(UTGenericEndPointInterface.class).getResponse("").execute();
-            Log.d(TAG, responseBody.toString());
-            if (responseBody.code() == 200 && responseBody.body() != null) {
-                response = responseBody.body().string();
-                Log.d(TAG, response);
-            } else if (responseBody.code() != 200 && responseBody.errorBody() != null) {
-                response = responseBody.errorBody().string();
-                errorBody = true;
-            }
-
-            if (responseBody.code() != HTTP_OK) {
-                JsonObject data = new JsonObject();
-                data.addProperty("URL", responseBody.raw().request().url().toString());
-                data.addProperty("HEADERS", responseBody.raw().request().headers().toString());
-                data.addProperty("BODY", responseBody.raw().request().body() != null ? responseBody.raw().request().body().toString() : "");
-                data.addProperty("MESSAGE", responseBody.message());
-                data.addProperty("METHOD", responseBody.raw().request().method());
-                data.addProperty("CODE", responseBody.code());
-                lastError = responseBody.errorBody() != null ? responseBody.errorBody().string() : lastError;
-            }
-
-            if (response != null && !response.isEmpty()) {
-                if (decode) {
-//                    response = decryptDecompressDataBase64(response);
-                    if (response == null || response.isEmpty()) {
-                        errorParseo("Error al decodificar la respuesta en Base64");
-                        errorBody = false;
-                        return false;
-                    }
-                }
-                if (errorBody) {
-                    if (!validarRespuesta(response)) {
-                        errorBody = false;
-                    }
-                    return false;
-                } else {
-                    return validarRespuesta(response);
-                }
-            } else {
-                errorBody = false;
-                return false;
-            }
-
-        } catch (IOException e) {
-            errorConexion("No se cuenta con cobertura para realizar la operacion");
-            Log.e(TAG, e.getMessage());
-//            ResponseHandler.sendMail(serviceUrl, method, "", null, e.toString());
-            return false;
-        } catch (Exception e) {
-            errorConexion("Error al consultar el servicio");
-            Log.e(TAG, e + "Error al consultar sevicio");
-//            ResponseHandler.sendMail(serviceUrl, method, "", response, e.toString());
-            return false;
-        }
-    }
-
     protected Boolean responsePostParamssQuery(String method, Map<String, String> params, boolean decode) {
         if (!checkConnection()) {
             errorConexion("No se cuenta con cobertura para realizar la operación");
@@ -173,6 +110,114 @@ public class UTWebApplication {
         }
     }
 
+    protected Boolean responsePOSTAuthorization(String method, Map<String, Integer> params, boolean decode, String authorization) {
+        if (!checkConnection()) {
+            errorConexion("No se cuenta con cobertura para realizar la operación");
+            return false;
+        }
+
+        if (!verificarToken(authorization)) {
+            lastError = "El token de autorización esta vacio, debes proporcionar un token para continuar";
+            return false;
+        }
+        String response = null;
+        Log.i(TAG, serviceUrl + method + params);
+        try {
+            Response<ResponseBody> call = retrofitClient.getClient(serviceUrl).create(UTGenericEndPointInterface.class).responsePostAuthorization(authorization, method, params).execute();
+            responseBody = call.body();
+            if (responseBody != null) {
+                response = responseBody.string();
+            }
+
+            if (call.code() != HTTP_OK) {
+                JsonObject data = new JsonObject();
+                data.addProperty("URL", call.raw().request().url().toString());
+                data.addProperty("HEADERS", call.raw().request().headers().toString());
+                data.addProperty("BODY", call.raw().request().body() != null ? call.raw().request().body().toString() : "");
+                data.addProperty("MESSAGE", call.message());
+                data.addProperty("METHOD", call.raw().request().method());
+                data.addProperty("CODE", call.code());
+                lastError = call.errorBody() != null ? call.errorBody().string() : lastError;
+            }
+
+            if (response != null && !response.isEmpty()) {
+                if (decode) {
+//                    response = decryptDecompressDataBase64(response);
+                    if (response == null || response.isEmpty()) {
+                        errorParseo("Error al decodificar la respuesta en Base64");
+                        return false;
+                    }
+                }
+                return validarRespuesta(response);
+
+            } else {
+                return false;
+            }
+        } catch (IOException e) {
+            Log.e(TAG, "" + e);
+            errorConexion("No se cuenta con cobertura para realizar la operación");
+            return false;
+        } catch (Exception e) {
+            Log.e(TAG, "" + e);
+            errorConexion("Error al consultar el servicio");
+            return false;
+        }
+    }
+
+    protected Boolean responsePOSTAuthorization(String method, JsonObject params, boolean decode, String authorization) {
+        if (!checkConnection()) {
+            errorConexion("No se cuenta con cobertura para realizar la operación");
+            return false;
+        }
+
+        if (!verificarToken(authorization)) {
+            lastError = "El token de autorización esta vacio, debes proporcionar un token para continuar";
+            return false;
+        }
+        String response = null;
+        Log.i(TAG, serviceUrl + method + params);
+        try {
+            Response<ResponseBody> call = retrofitClient.getClient(serviceUrl).create(UTGenericEndPointInterface.class).responsePostAuthorizationJson(authorization, method, params).execute();
+            responseBody = call.body();
+            if (responseBody != null) {
+                response = responseBody.string();
+            }
+
+            if (call.code() != HTTP_OK) {
+                JsonObject data = new JsonObject();
+                data.addProperty("URL", call.raw().request().url().toString());
+                data.addProperty("HEADERS", call.raw().request().headers().toString());
+                data.addProperty("BODY", call.raw().request().body() != null ? call.raw().request().body().toString() : "");
+                data.addProperty("MESSAGE", call.message());
+                data.addProperty("METHOD", call.raw().request().method());
+                data.addProperty("CODE", call.code());
+                lastError = call.errorBody() != null ? call.errorBody().string() : lastError;
+            }
+
+            if (response != null && !response.isEmpty()) {
+                if (decode) {
+//                    response = decryptDecompressDataBase64(response);
+                    if (response == null || response.isEmpty()) {
+                        errorParseo("Error al decodificar la respuesta en Base64");
+                        return false;
+                    }
+                }
+                return validarRespuesta(response);
+
+            } else {
+                return false;
+            }
+        } catch (IOException e) {
+            Log.e(TAG, "" + e);
+            errorConexion("No se cuenta con cobertura para realizar la operación");
+            return false;
+        } catch (Exception e) {
+            Log.e(TAG, "" + e);
+            errorConexion("Error al consultar el servicio");
+            return false;
+        }
+    }
+
     protected boolean validarRespuesta(String response) {
         if (UTJson.isJsonObject(response)) {
             json = new Gson().fromJson(response, JsonObject.class);
@@ -185,16 +230,10 @@ public class UTWebApplication {
             errorParseo("Error al decodificar el objeto json");
             return false;
         }
-//        Log.d(UTWebApplication.TAG, json.toString());
+        Log.d(UTWebApplication.TAG, json.toString());
         return true;
     }
 
-
-    /**
-     * Realiza una petición para verificar la conexion
-     *
-     * @return true Si el servicio se consumio con éxito. false Para cualquier otro caso.
-     */
     public synchronized boolean checkConnection() {
         boolean result = false;
         if (!checkConnection) {
